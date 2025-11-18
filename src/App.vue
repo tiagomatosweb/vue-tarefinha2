@@ -54,7 +54,7 @@
     <ul class="list-group">
       <li 
         v-for="task in tasks"
-        :key="task.name"
+        :key="task.id"
         class="list-group-item d-flex align-items-center gap-2"
       >
         <template v-if="task.state === 'show'">
@@ -64,7 +64,7 @@
             :class="task.completed ? 'text-decoration-line-through text-muted' : null"
           >{{ task.name }}</span>
           <button class="btn btn-primary btn-sm" @click="editTask(task)">Editar</button>
-          <button class="btn btn-danger btn-sm">Excluir</button>
+          <button class="btn btn-danger btn-sm" @click="task.state = 'delete'">Excluir</button>
         </template>
 
         <template v-else-if="task.state === 'edit'">
@@ -73,16 +73,16 @@
           <button class="btn btn-success btn-sm" @click="commitTask(task)">Salvar</button>
           <button class="btn btn-secondary btn-sm" @click="task.state = 'show'">Cancelar</button>
         </template>
+
+        <template v-else-if="task.state === 'delete'">
+          <span class="flex-grow-1">
+            <div class="fw-semibold">{{ task.name }}</div>
+            <div class="text-muted small">Tem certeza que deseja remover?</div>
+          </span>
+          <button class="btn btn-danger btn-sm" @click="deleteTask(task)">Sim, excluir</button>
+          <button class="btn btn-outline-secondary btn-sm" @click="task.state = 'show'">Cancelar</button>
+        </template>
       </li>
-      <!-- 
-      <li class="list-group-item d-flex align-items-center gap-2">
-        <span class="flex-grow-1">
-          <div class="fw-semibold">Atualizar documentação da API</div>
-          <div class="text-muted small">Tem certeza que deseja remover?</div>
-        </span>
-        <button class="btn btn-danger btn-sm">Sim, excluir</button>
-        <button class="btn btn-outline-secondary btn-sm">Cancelar</button>
-      </li> -->
     </ul>
 
     <!-- Empty state -->
@@ -104,6 +104,7 @@ const addTask = () => {
   if (!newTask.value) {}
 
   tasks.value.push({
+    id: Date.now(),
     name: newTask.value,
     completed: false,
     state: 'show' // edit, delete
@@ -133,5 +134,12 @@ const commitTask = (task) => {
   }
 
   task.state = 'show'
+}
+
+const deleteTask = (task) => {
+  const index = tasks.value.findIndex(o => o.id === task.id)
+  if (index !== -1) {
+    tasks.value.splice(index, 1)
+  }
 }
 </script>
