@@ -38,7 +38,10 @@
     </div>
 
     <!-- Filters -->
-    <div class="d-flex gap-2 mb-3">
+    <div 
+      v-if="tasks.length"
+      class="d-flex gap-2 mb-3"
+    >
       <input v-model="filterSearch" type="text" placeholder="Buscar tarefa..." class="form-control" style="flex: 1;">
       <select v-model="filterStatus" class="form-select" style="flex: 1;">
         <option value="">Todas</option>
@@ -84,11 +87,16 @@
     </ul>
 
     <!-- Empty state -->
-    <!-- <div class="card bg-light">
+    <div 
+      v-if="!filteredTasks.length"
+      class="card bg-light"
+    >
       <div class="card-body text-center py-5">
-        <p class="text-muted mb-0">Nenhuma tarefa cadastrada</p>
+        <p class="text-muted mb-0">
+          {{ emptyStateMessage }}
+        </p>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -163,4 +171,14 @@ const deleteTask = (task) => {
     tasks.value.splice(index, 1)
   }
 }
+
+const emptyStateMessage = computed(() => {
+  let output = 'Nenhuma tarefa cadastrada.'
+
+  if (filterSearch.value || filterStatus.value) {
+    return 'Nenhum resultado para este filtro.'
+  }
+
+  return output;
+})
 </script>
