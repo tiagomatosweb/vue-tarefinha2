@@ -57,20 +57,24 @@
         :key="task.name"
         class="list-group-item d-flex align-items-center gap-2"
       >
-        <input v-model="task.completed" type="checkbox" class="form-check-input">
-        <span 
-          class="flex-grow-1"
-          :class="task.completed ? 'text-decoration-line-through text-muted' : null"
-        >{{ task.name }}</span>
-        <button class="btn btn-primary btn-sm">Editar</button>
-        <button class="btn btn-danger btn-sm">Excluir</button>
+        <template v-if="task.state === 'show'">
+          <input v-model="task.completed" type="checkbox" class="form-check-input">
+          <span 
+            class="flex-grow-1"
+            :class="task.completed ? 'text-decoration-line-through text-muted' : null"
+          >{{ task.name }}</span>
+          <button class="btn btn-primary btn-sm" @click="editTask(task)">Editar</button>
+          <button class="btn btn-danger btn-sm">Excluir</button>
+        </template>
+
+        <template v-else-if="task.state === 'edit'">
+          <input v-model="task._completed" type="checkbox" class="form-check-input">
+          <input v-model="task._name" type="text" class="form-control form-control-sm">
+          <button class="btn btn-success btn-sm" @click="commitTask(task)">Salvar</button>
+          <button class="btn btn-secondary btn-sm" @click="task.state = 'show'">Cancelar</button>
+        </template>
       </li>
-      <!-- <li class="list-group-item d-flex align-items-center gap-2">
-        <input type="checkbox" class="form-check-input">
-        <input type="text" value="Corrigir bug no modal" class="form-control form-control-sm">
-        <button class="btn btn-success btn-sm">Salvar</button>
-        <button class="btn btn-secondary btn-sm">Cancelar</button>
-      </li>
+      <!-- 
       <li class="list-group-item d-flex align-items-center gap-2">
         <span class="flex-grow-1">
           <div class="fw-semibold">Atualizar documentação da API</div>
@@ -105,5 +109,29 @@ const addTask = () => {
     state: 'show' // edit, delete
   })
   newTask.value = ''
+}
+
+const editTask = (task) => {
+  if (!Object.hasOwn(task, '_name')) {
+    task._name = task.name
+  }
+
+  if (!Object.hasOwn(task, '_completed')) {
+    task._completed = task.completed
+  }
+  
+  task.state = 'edit'
+}
+
+const commitTask = (task) => {
+  if (Object.hasOwn(task, '_name')) {
+    task.name = task._name
+  }
+
+  if (Object.hasOwn(task, '_completed')) {
+    task.completed = task._completed
+  }
+
+  task.state = 'show'
 }
 </script>
