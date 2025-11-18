@@ -37,23 +37,21 @@
       >Adicionar</button>
     </div>
 
-    <pre>{{ tasks }}</pre>
-
     <!-- Filters -->
-    <!-- <div class="d-flex gap-2 mb-3">
-      <input type="text" placeholder="Buscar tarefa..." class="form-control" style="flex: 1;">
-      <select class="form-select" style="flex: 1;">
+    <div class="d-flex gap-2 mb-3">
+      <input v-model="filterSearch" type="text" placeholder="Buscar tarefa..." class="form-control" style="flex: 1;">
+      <select v-model="filterStatus" class="form-select" style="flex: 1;">
         <option value="">Todas</option>
         <option value="pending">Pendentes</option>
         <option value="completed">Concluídas</option>
       </select>
-      <button class="btn btn-outline-secondary btn-sm" style="flex-shrink: 0;">Limpar filtros</button>
-    </div> -->
+      <button @click="clearFilters" class="btn btn-outline-secondary btn-sm" style="flex-shrink: 0;">Limpar filtros</button>
+    </div>
 
     <!-- Tasks -->
     <ul class="list-group">
       <li 
-        v-for="task in tasks"
+        v-for="task in filteredTasks"
         :key="task.id"
         class="list-group-item d-flex align-items-center gap-2"
       >
@@ -95,10 +93,33 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 
 const newTask = ref('')
 const tasks = ref([])
+const filterSearch = ref('')
+const filterStatus = ref('')
+const filteredTasks = computed(() => {
+  let output = tasks.value
+  if (filterSearch.value) {
+    const search = filterSearch.value.toLowerCase()
+
+    output = output.filter(o => o.name.toLowerCase().includes(search))
+  }
+
+  if (filterStatus.value === 'pending') {
+    return output.filter(o => o.completed === false)
+  } else if (filterStatus.value === 'completed')  {
+    return output.filter(o => o.completed === true)
+  }
+
+  return output;
+});
+
+const clearFilters = () => {
+  filterSearch.value = ''
+  filterStatus.value = ''
+}
 
 const addTask = () => {
   if (!newTask.value) {}
