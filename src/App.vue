@@ -22,16 +22,10 @@
     />
 
     <!-- Empty state -->
-    <div 
+     <TaskEmptyState 
       v-if="!filteredTasks.length"
-      class="card bg-light"
-    >
-      <div class="card-body text-center py-5">
-        <p class="text-muted mb-0">
-          {{ emptyStateMessage }}
-        </p>
-      </div>
-    </div>
+      :message="emptyStateMessage" 
+    />
   </div>
 </template>
 
@@ -41,6 +35,7 @@ import TaskStats from './components/TaskStats.vue'
 import TaskInput from './components/TaskInput.vue'
 import TaskFilters from './components/TaskFilters.vue'
 import TaskList from './components/TaskList.vue'
+import TaskEmptyState from './components/TaskEmptyState.vue'
 
 const tasks = ref([])
 const filterSearch = ref('')
