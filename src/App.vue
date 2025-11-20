@@ -6,19 +6,7 @@
     <TaskStats :tasks="tasks" />
     
     <!-- Add new task -->
-    <div class="input-group mb-3">
-      <input 
-        v-model="newTask"
-        type="text" 
-        placeholder="Adicionar uma nova tarefa..." 
-        class="form-control"
-        @keyup.enter="addTask"
-      >
-      <button 
-        class="btn btn-success"
-        @click="addTask"
-      >Adicionar</button>
-    </div>
+    <TaskInput @add-task="addTask" />
 
     <!-- Filters -->
     <div 
@@ -86,6 +74,7 @@
 <script setup>
 import {ref, computed} from 'vue'
 import TaskStats from './components/TaskStats.vue'
+import TaskInput from './components/TaskInput.vue'
 
 const newTask = ref('')
 const tasks = ref([])
@@ -113,16 +102,15 @@ const clearFilters = () => {
   filterStatus.value = ''
 }
 
-const addTask = () => {
-  if (!newTask.value) {}
+const addTask = (task) => {
+  if (!task) { return }
 
   tasks.value.push({
     id: Date.now(),
-    name: newTask.value,
+    name: task,
     completed: false,
     state: 'show' // edit, delete
   })
-  newTask.value = ''
 }
 
 const editTask = (task) => {
