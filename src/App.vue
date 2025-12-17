@@ -1,6 +1,6 @@
 <template>
   <div class="container" style="max-width: 800px;">
-    <h1 class="text-center my-4">Tarefinha 1</h1>
+    <h1 class="text-center my-4">Tarefinha 2</h1>
     
     <!-- Stats -->
     <TaskStats :tasks="tasks" />
